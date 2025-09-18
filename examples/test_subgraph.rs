@@ -1,4 +1,4 @@
-use plotiron::dot_renderer::DotGraph;
+use plotiron::dot::DotGraph;
 use plotiron::figure::Figure;
 use std::fs;
 

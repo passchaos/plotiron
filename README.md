@@ -86,6 +86,118 @@ fig.add_subplot()
 std::fs::write("bar_plot.svg", fig.to_svg()).unwrap();
 ```
 
+### Histogram
+
+```rust
+// Generate sample data
+let data: Vec<f64> = (0..1000).map(|i| {
+    let x = (i as f64 - 500.0) / 100.0;
+    x + (rand::random::<f64>() - 0.5) * 2.0
+}).collect();
+
+let mut fig = figure();
+fig.add_subplot()
+    .histogram(&data, 20)  // 20 bins
+    .set_title("Data Distribution")
+    .set_xlabel("Value")
+    .set_ylabel("Frequency");
+std::fs::write("histogram.svg", fig.to_svg()).unwrap();
+```
+
+### Pie Chart
+
+```rust
+use plotiron::*;
+
+let values = vec![30.0, 25.0, 20.0, 15.0, 10.0];
+let labels = vec![
+    "Product A".to_string(),
+    "Product B".to_string(),
+    "Product C".to_string(),
+    "Product D".to_string(),
+    "Product E".to_string()
+];
+
+let mut fig = figure();
+fig.add_subplot()
+    .pie(&values, Some(&labels))
+    .set_title("Market Share Distribution");
+
+std::fs::write("pie_chart.svg", fig.to_svg()).expect("Failed to write file");
+```
+
+### Box Plot
+
+```rust
+use plotiron::*;
+
+let data = vec![
+    12.5, 14.2, 15.8, 16.1, 17.3, 18.9, 19.2, 20.1, 21.5, 22.8,
+    23.1, 24.7, 25.3, 26.9, 27.2, 28.5, 29.1, 30.8, 31.2, 32.5,
+    // Add some outliers
+    8.0, 38.5, 42.0
+];
+
+let mut fig = figure();
+fig.add_subplot()
+    .boxplot(&data)
+    .set_title("Performance Distribution with Outliers")
+    .set_ylabel("Score");
+
+std::fs::write("boxplot.svg", fig.to_svg()).expect("Failed to write file");
+```
+
+### Violin Plot
+
+```rust
+use plotiron::*;
+
+let data = vec![
+    12.5, 14.2, 15.8, 16.1, 17.3, 18.9, 19.2, 20.1, 21.5, 22.8,
+    23.1, 24.7, 25.3, 26.9, 27.2, 28.5, 29.1, 30.8, 31.2, 32.5,
+    33.1, 34.2, 35.5, 36.8, 37.1, 38.4, 39.7, 40.2, 41.5, 42.8,
+    // Add some variation for interesting distribution
+    15.5, 18.2, 22.1, 25.8, 29.3, 33.7, 37.4, 41.1, 44.6, 48.2
+];
+
+let mut fig = figure();
+fig.add_subplot()
+    .violin(&data)
+    .set_title("Data Distribution - Violin Plot")
+    .set_ylabel("Values")
+    .grid(true);
+
+std::fs::write("violin.svg", fig.to_svg()).expect("Failed to write file");
+```
+
+### Contour Plot
+
+```rust
+// Create sample data for contour plot
+let x: Vec<f64> = (0..20).map(|i| i as f64 * 0.5).collect();
+let y: Vec<f64> = (0..15).map(|i| i as f64 * 0.4).collect();
+
+// Create a 2D function: z = sin(x) * cos(y)
+let mut z: Vec<Vec<f64>> = Vec::new();
+for &yi in &y {
+    let mut row = Vec::new();
+    for &xi in &x {
+        let zi = (xi * 0.5).sin() * (yi * 0.3).cos() + 0.2 * (xi * yi * 0.1).sin();
+        row.push(zi);
+    }
+    z.push(row);
+}
+
+let mut fig = figure();
+fig.add_subplot()
+    .contour(&x, &y, &z)
+    .set_title("Mathematical Function - Contour Plot")
+    .set_xlabel("X values")
+    .set_ylabel("Y values");
+
+std::fs::write("contour.svg", fig.to_svg()).expect("Failed to write file");
+```
+
 ### Multiple Line Plot
 
 ```rust
@@ -279,40 +391,3 @@ This will generate several example SVG files in the `output/` directory:
 - `multi_line_plot.svg` - Multi-line plot
 - `scatter_plot.svg` - Scatter plot
 - `bar_plot.svg` - Bar chart
-
-## Architecture
-
-```
-src/
-├── lib.rs          # Main library entry point
-├── main.rs         # Example program
-├── figure.rs       # Figure management
-├── axes.rs         # Axes functionality
-├── plot.rs         # Plot types
-├── colors.rs       # Color definitions
-├── markers.rs      # Marker styles
-└── utils.rs        # Utility functions
-```
-
-## Dependencies
-
-- `svg` - SVG generation
-- `num-traits` - Numeric traits
-- `rand` - Random number generation (examples only)
-
-## License
-
-MIT License
-
-## Contributing
-
-Issues and Pull Requests are welcome!
-
-## TODO
-
-- [ ] More chart types (histograms, pie charts, etc.)
-- [ ] Animation support
-- [ ] Interactive charts
-- [ ] 3D chart support
-- [ ] Better error handling
-- [ ] Performance optimization

@@ -69,15 +69,15 @@ impl Figure {
 
     /// Add a subplot with DOT graph content
     pub fn add_dot_subplot(&mut self, dot_content: &str) -> Result<&mut Axes, String> {
-        self.add_dot_subplot_with_layout(dot_content, crate::dot_renderer::LayoutAlgorithm::Hierarchical)
+        self.add_dot_subplot_with_layout(dot_content, crate::dot::LayoutAlgorithm::Hierarchical)
     }
     
     /// Add a DOT subplot with specified layout algorithm
-    pub fn add_dot_subplot_with_layout(&mut self, dot_content: &str, layout: crate::dot_renderer::LayoutAlgorithm) -> Result<&mut Axes, String> {
+    pub fn add_dot_subplot_with_layout(&mut self, dot_content: &str, layout: crate::dot::LayoutAlgorithm) -> Result<&mut Axes, String> {
         let axes = self.add_subplot();
         
         // Parse DOT content using the advanced renderer
-        let mut dot_graph = crate::dot_renderer::DotGraph::parse_dot(dot_content)?;
+        let mut dot_graph = crate::dot::DotGraph::parse_dot(dot_content)?;
         dot_graph.set_layout(layout);
         dot_graph.apply_layout();
         

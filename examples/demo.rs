@@ -187,7 +187,7 @@ fn main() {
     
     // Hierarchical layout
     let mut fig9 = figure();
-    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot_renderer::LayoutAlgorithm::Hierarchical) {
+    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot::LayoutAlgorithm::Hierarchical) {
         Ok(axes) => {
             axes.set_title("Hierarchical Layout")
                 .show_x_axis(false)
@@ -198,7 +198,7 @@ fn main() {
     }
     
     // Force-directed layout
-    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot_renderer::LayoutAlgorithm::ForceDirected) {
+    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot::LayoutAlgorithm::ForceDirected) {
         Ok(axes) => {
             axes.set_title("Force-Directed Layout")
                 .show_x_axis(false)
@@ -209,7 +209,7 @@ fn main() {
     }
     
     // Circular layout
-    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot_renderer::LayoutAlgorithm::Circular) {
+    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot::LayoutAlgorithm::Circular) {
         Ok(axes) => {
             axes.set_title("Circular Layout")
                 .show_x_axis(false)
@@ -220,7 +220,7 @@ fn main() {
     }
     
     // Grid layout
-    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot_renderer::LayoutAlgorithm::Grid) {
+    match fig9.add_dot_subplot_with_layout(complex_dot, plotiron::dot::LayoutAlgorithm::Grid) {
         Ok(axes) => {
             axes.set_title("Grid Layout")
                 .show_x_axis(false)
@@ -234,6 +234,134 @@ fn main() {
     std::fs::write("output/advanced_dot_layouts.svg", &advanced_dot_svg).expect("Failed to write advanced DOT layouts to file");
     println!("Advanced DOT layouts saved to advanced_dot_layouts.svg");
     
+    // Example 10: Histogram
+    println!("Creating histogram...");
+    let histogram_data: Vec<f64> = (0..1000).map(|i| {
+        let x = (i as f64 - 500.0) / 100.0;
+        x + (rand::random::<f64>() - 0.5) * 2.0
+    }).collect();
+    
+    let mut fig10 = figure();
+    fig10.add_subplot()
+        .histogram(&histogram_data, 20)
+        .set_title("Data Distribution Histogram")
+        .set_xlabel("Value")
+        .set_ylabel("Frequency")
+        .grid(true);
+    
+    let histogram_svg = fig10.to_svg();
+    std::fs::write("output/histogram_demo_main.svg", &histogram_svg).expect("Failed to write histogram to file");
+    println!("Histogram saved to histogram_demo_main.svg");
+    
+    // Example 11: Pie Chart
+    println!("Creating pie chart...");
+    let pie_values = vec![35.0, 25.0, 20.0, 12.0, 8.0];
+    let pie_labels = vec![
+        "Development".to_string(),
+        "Marketing".to_string(),
+        "Sales".to_string(),
+        "Support".to_string(),
+        "Other".to_string()
+    ];
+    
+    let mut fig11 = figure();
+    fig11.add_subplot()
+        .pie(&pie_values, Some(&pie_labels))
+        .set_title("Department Budget Allocation");
+    
+    let pie_svg = fig11.to_svg();
+    std::fs::write("output/pie_chart_demo_main.svg", &pie_svg).expect("Failed to write pie chart to file");
+    println!("Pie chart saved to pie_chart_demo_main.svg");
+    
+    // Example 12: Box plot
+    println!("Creating box plot...");
+    let box_data = vec![
+        12.5, 14.2, 15.8, 16.1, 17.3, 18.9, 19.2, 20.1, 21.5, 22.8,
+        23.1, 24.7, 25.3, 26.9, 27.2, 28.5, 29.1, 30.8, 31.2, 32.5,
+        // Add some outliers
+        8.0, 38.5, 42.0
+    ];
+    
+    let mut fig12 = figure();
+    fig12.add_subplot()
+        .boxplot(&box_data)
+        .set_title("Performance Distribution with Outliers")
+        .set_ylabel("Score");
+    
+    let box_svg = fig12.to_svg();
+    std::fs::write("output/boxplot_demo_main.svg", &box_svg).expect("Failed to write box plot to file");
+    println!("Box plot saved to boxplot_demo_main.svg");
+    
+    // Example 13: Heatmap
+    println!("Creating heatmap...");
+    let correlation_matrix = vec![
+        vec![1.0, 0.8, 0.3, -0.1],
+        vec![0.8, 1.0, 0.5, 0.2],
+        vec![0.3, 0.5, 1.0, 0.7],
+        vec![-0.1, 0.2, 0.7, 1.0],
+    ];
+    
+    let mut fig13 = figure();
+    fig13.add_subplot()
+        .heatmap(&correlation_matrix)
+        .set_title("Correlation Matrix Heatmap")
+        .set_xlabel("Variables")
+        .set_ylabel("Variables")
+        .grid(false);
+    
+    let heatmap_svg = fig13.to_svg();
+    std::fs::write("output/heatmap_demo_main.svg", &heatmap_svg).expect("Failed to write heatmap to file");
+    println!("Heatmap saved to heatmap_demo_main.svg");
+    
+    // Example 14: Violin Plot
+    println!("Creating violin plot...");
+    let violin_data = vec![
+        12.5, 14.2, 15.8, 16.1, 17.3, 18.9, 19.2, 20.1, 21.5, 22.8,
+        23.1, 24.7, 25.3, 26.9, 27.2, 28.5, 29.1, 30.8, 31.2, 32.5,
+        33.1, 34.2, 35.5, 36.8, 37.1, 38.4, 39.7, 40.2, 41.5, 42.8,
+        // Add some variation
+        15.5, 18.2, 22.1, 25.8, 29.3, 33.7, 37.4, 41.1, 44.6, 48.2
+    ];
+    
+    let mut fig14 = figure();
+    fig14.add_subplot()
+        .violin(&violin_data)
+        .set_title("Data Distribution - Violin Plot")
+        .set_ylabel("Values")
+        .grid(true);
+    
+    let violin_svg = fig14.to_svg();
+    std::fs::write("output/violin_demo_main.svg", &violin_svg).expect("Failed to write violin plot to file");
+    println!("Violin plot saved to violin_demo_main.svg");
+    
+    // Example 15: Contour Plot
+    println!("Creating contour plot...");
+    let x_contour: Vec<f64> = (0..15).map(|i| i as f64 * 0.6).collect();
+    let y_contour: Vec<f64> = (0..12).map(|i| i as f64 * 0.5).collect();
+    
+    // Create a 2D function: z = sin(x) * cos(y) + noise
+    let mut z_contour: Vec<Vec<f64>> = Vec::new();
+    for &yi in &y_contour {
+        let mut row = Vec::new();
+        for &xi in &x_contour {
+            let zi = (xi * 0.4).sin() * (yi * 0.3).cos() + 0.1 * (xi * yi * 0.05).sin();
+            row.push(zi);
+        }
+        z_contour.push(row);
+    }
+    
+    let mut fig15 = figure();
+    fig15.add_subplot()
+        .contour(&x_contour, &y_contour, &z_contour)
+        .set_title("Mathematical Function - Contour Plot")
+        .set_xlabel("X values")
+        .set_ylabel("Y values")
+        .grid(true);
+    
+    let contour_svg = fig15.to_svg();
+    std::fs::write("output/contour_demo_main.svg", &contour_svg).expect("Failed to write contour plot to file");
+    println!("Contour plot saved to contour_demo_main.svg");
+    
     println!("PlotIron - Rust plotting library demo completed");
-    println!("Generated SVG content for all chart types including advanced DOT graphs with multiple layouts, axis control, combined charts, and grid control");
+    println!("Generated SVG content for all chart types including histograms, pie charts, box plots, heatmaps, violin plots, contour plots, advanced DOT graphs with multiple layouts, axis control, combined charts, and grid control");
 }

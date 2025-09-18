@@ -9,7 +9,7 @@ pub mod plot;
 pub mod colors;
 pub mod markers;
 pub mod utils;
-pub mod dot_renderer;
+pub mod dot;
 
 pub use figure::Figure;
 pub use axes::Axes;
