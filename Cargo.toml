@@ -1,0 +1,9 @@
+[package]
+name = "plotiron"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+svg = "0.13"
+num-traits = "0.2"
+rand = "0.8"
