@@ -1,8 +1,6 @@
-use crate::Figure;
 use eframe::egui::{self, Event, ViewportBuilder, Widget};
 
-pub fn show_svg(fig: &Figure) {
-    let svg = fig.to_svg();
+pub fn show_svg(svg: String) {
     eframe::run_native(
         "Plotiron Viewer",
         eframe::NativeOptions {

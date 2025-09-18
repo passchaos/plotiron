@@ -142,7 +142,8 @@ impl Figure {
 
     /// Display the figure (prints SVG to stdout for now)
     pub fn show(&self) {
-        crate::viewer::show_svg(self);
+        let svg = self.to_svg();
+        crate::viewer::show_svg(svg);
     }
 
     /// Clear all subplots
