@@ -1,7 +1,11 @@
 [package]
 name = "plotiron"
 version = "0.1.0"
-edition = "2021"
+edition = "2024"
+description = "A Rust plotting library that integrates DOT graph rendering with traditional plotting capabilities"
+license = "MIT"
+keywords = ["dot", "plot"]
+categories = ["visualization"]
 
 [dependencies]
 svg = "0.13"
