@@ -3,19 +3,20 @@
 //! This library provides a simple and intuitive API for creating 2D plots
 //! similar to matplotlib in Python.
 
-pub mod figure;
 pub mod axes;
-pub mod plot;
 pub mod colors;
-pub mod markers;
-pub mod utils;
 pub mod dot;
+pub mod figure;
+pub mod markers;
+pub mod plot;
+pub mod utils;
+mod viewer;
 
-pub use figure::Figure;
 pub use axes::Axes;
-pub use plot::{Plot, PlotType};
 pub use colors::Color;
+pub use figure::Figure;
 pub use markers::Marker;
+pub use plot::{Plot, PlotType};
 
 /// Create a new figure with default settings
 pub fn figure() -> Figure {

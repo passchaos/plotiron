@@ -8,6 +8,9 @@ keywords = ["dot", "plot"]
 categories = ["visualization"]
 
 [dependencies]
-svg = "0.13"
-num-traits = "0.2"
-rand = "0.8"
+svg = "*"
+num-traits = "*"
+rand = "*"
+eframe = "*"
+egui_extras = { version = "*", features = ["svg", "svg_text"] }
+md-5 = "*"
