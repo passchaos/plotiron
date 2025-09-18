@@ -1,6 +1,6 @@
 # PlotIron - Rust Plotting Library
 
-A Rust plotting library inspired by matplotlib for creating 2D charts and visualizations.
+A Rust plotting library that integrates DOT graph rendering with traditional matplotlib plotting capabilities
 
 ## Features
 
@@ -39,7 +39,7 @@ fn main() {
         .set_title("Sine Function")
         .set_xlabel("x")
         .set_ylabel("sin(x)");
-    
+
     // Save as SVG file
     std::fs::write("plot.svg", fig.to_svg()).unwrap();
 }
@@ -259,7 +259,7 @@ digraph G {
     B [label="Process"];
     C [label="Decision"];
     D [label="End"];
-    
+
     A -> B;
     B -> C;
     C -> D [label="Yes"];
@@ -286,7 +286,7 @@ let dot_content = r#"
 digraph Network {
     rankdir=LR;
     node [shape=circle];
-    
+
     A -> B -> C;
     A -> D -> C;
     B -> E;
