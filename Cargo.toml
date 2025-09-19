@@ -6,6 +6,7 @@ description = "A Rust plotting library that integrates DOT graph rendering with 
 license = "MIT"
 keywords = ["dot", "plot"]
 categories = ["visualization"]
+repository = "https://github.com/passchaos/plotiron"
 
 [dependencies]
 svg = "*"
