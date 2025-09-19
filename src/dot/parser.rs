@@ -140,7 +140,7 @@ impl DotGraph {
                     // Ensure nodes exist
                     if !node_map.contains_key(&from) {
                         let node = Node {
-                            id: from.clone(),
+                              id: from.clone(),
                             label: Some(from.clone()),
                             shape: NodeShape::Ellipse,
                             color: Self::get_node_color(&from),

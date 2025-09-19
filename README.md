@@ -50,13 +50,21 @@ fn main() {
 ### Line Plot
 
 ```rust
-let x = vec![1.0, 2.0, 3.0, 4.0, 5.0];
-let y = vec![1.0, 4.0, 2.0, 3.0, 5.0];
+use vectra::Array;
+
+// Create x values from -10 to 10
+let x: Vec<_> = (-100..100).map(|i| (i as f64) * 0.1).collect();
+let x = Array::from(x);
+
+// Calculate sin and cos values
+let y = x.sin();
+let z = x.cos();
 
 let mut fig = figure();
 fig.add_subplot()
-    .plot(&x, &y)
-    .set_title("Simple Line Plot");
+    .plot(&x, y)  // Plot sin(x)
+    .plot(x, z)  // Plot cos(x)
+    .set_title("Sin and Cos Functions");
 std::fs::write("line_plot.svg", fig.to_svg()).unwrap();
 ```
 

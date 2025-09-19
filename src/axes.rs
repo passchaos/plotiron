@@ -3,6 +3,7 @@
 use crate::colors::{Color, get_cycle_color};
 use crate::plot::Plot;
 use crate::utils::{calculate_range, format_number, generate_ticks, map_range};
+use crate::IntoVec;
 
 /// Represents a set of axes for plotting
 #[derive(Debug)]
@@ -49,7 +50,11 @@ impl Axes {
     }
 
     /// Add a line plot
-    pub fn plot(&mut self, x: &[f64], y: &[f64]) -> &mut Self {
+    pub fn plot<X, Y>(&mut self, x: X, y: Y) -> &mut Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         let color_index = self.plots.len();
         let mut plot = Plot::line(x, y);
         plot.color = crate::colors::get_cycle_color(color_index);
@@ -58,7 +63,11 @@ impl Axes {
     }
 
     /// Add a scatter plot
-    pub fn scatter(&mut self, x: &[f64], y: &[f64]) -> &mut Self {
+    pub fn scatter<X, Y>(&mut self, x: X, y: Y) -> &mut Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         let color_index = self.plots.len();
         let mut plot = Plot::scatter(x, y);
         plot.color = crate::colors::get_cycle_color(color_index);
@@ -67,7 +76,11 @@ impl Axes {
     }
 
     /// Add a bar plot
-    pub fn bar(&mut self, x: &[f64], y: &[f64]) -> &mut Self {
+    pub fn bar<X, Y>(&mut self, x: X, y: Y) -> &mut Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         let color_index = self.plots.len();
         let mut plot = Plot::bar(x, y);
         plot.color = crate::colors::get_cycle_color(color_index);
@@ -111,7 +124,11 @@ impl Axes {
     }
 
     /// Add a contour plot
-    pub fn contour(&mut self, x: &[f64], y: &[f64], z: &[Vec<f64>]) -> &mut Self {
+    pub fn contour<X, Y>(&mut self, x: X, y: Y, z: &[Vec<f64>]) -> &mut Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         let plot = Plot::contour(x, y, z).color(get_cycle_color(self.plots.len()));
         self.plots.push(plot);
         self

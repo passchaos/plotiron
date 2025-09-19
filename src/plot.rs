@@ -3,6 +3,7 @@
 use crate::colors::{Color, get_cycle_color};
 use crate::markers::Marker;
 use crate::utils::map_range;
+use crate::IntoVec;
 
 /// Different types of plots
 #[derive(Debug, Clone, PartialEq)]
@@ -44,10 +45,14 @@ pub struct Plot {
 
 impl Plot {
     /// Create a new line plot
-    pub fn line(x: &[f64], y: &[f64]) -> Self {
+    pub fn line<X, Y>(x: X, y: Y) -> Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         Plot {
-            x_data: x.to_vec(),
-            y_data: y.to_vec(),
+            x_data: x.into_vec(),
+            y_data: y.into_vec(),
             z_data: None,
             plot_type: PlotType::Line,
             color: get_cycle_color(0),
@@ -60,10 +65,14 @@ impl Plot {
     }
 
     /// Create a new scatter plot
-    pub fn scatter(x: &[f64], y: &[f64]) -> Self {
+    pub fn scatter<X, Y>(x: X, y: Y) -> Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         Plot {
-            x_data: x.to_vec(),
-            y_data: y.to_vec(),
+            x_data: x.into_vec(),
+            y_data: y.into_vec(),
             z_data: None,
             plot_type: PlotType::Scatter,
             color: get_cycle_color(0),
@@ -76,10 +85,14 @@ impl Plot {
     }
 
     /// Create a new bar plot
-    pub fn bar(x: &[f64], y: &[f64]) -> Self {
+    pub fn bar<X, Y>(x: X, y: Y) -> Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         Plot {
-            x_data: x.to_vec(),
-            y_data: y.to_vec(),
+            x_data: x.into_vec(),
+            y_data: y.into_vec(),
             z_data: None,
             plot_type: PlotType::Bar,
             color: get_cycle_color(0),
@@ -201,10 +214,14 @@ impl Plot {
     }
 
     /// Create a new contour plot
-    pub fn contour(x: &[f64], y: &[f64], z: &[Vec<f64>]) -> Self {
+    pub fn contour<X, Y>(x: X, y: Y, z: &[Vec<f64>]) -> Self 
+    where
+        X: IntoVec<f64>,
+        Y: IntoVec<f64>,
+    {
         Plot {
-            x_data: x.to_vec(),
-            y_data: y.to_vec(),
+            x_data: x.into_vec(),
+            y_data: y.into_vec(),
             z_data: Some(z.to_vec()),
             plot_type: PlotType::Contour,
             color: get_cycle_color(0),

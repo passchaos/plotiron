@@ -244,7 +244,7 @@ impl Figure {
         }
 
         // Plot nodes as scatter points
-        axes.scatter(&x_coords, &y_coords);
+        axes.scatter(x_coords.as_slice(), y_coords.as_slice());
         if let Some(last_plot) = axes.plots.last_mut() {
             last_plot.marker = crate::markers::Marker::Circle;
             last_plot.marker_size = 10.0;
@@ -259,7 +259,7 @@ impl Figure {
             ) {
                 let x_line = vec![x_coords[from_idx], x_coords[to_idx]];
                 let y_line = vec![y_coords[from_idx], y_coords[to_idx]];
-                axes.plot(&x_line, &y_line);
+                axes.plot(x_line, y_line);
                 if let Some(last_plot) = axes.plots.last_mut() {
                     last_plot.color = crate::colors::Color::BLACK;
                     last_plot.line_width = 1.0;
