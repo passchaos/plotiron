@@ -18,8 +18,8 @@ impl Figure {
     /// Create a new figure with default settings
     pub fn new() -> Self {
         Figure {
-            width: 800.0,
-            height: 600.0,
+            width: 1200.0,
+            height: 900.0,
             dpi: 100.0,
             background_color: Color::WHITE,
             subplots: Vec::new(),

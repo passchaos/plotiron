@@ -1,10 +1,10 @@
-use eframe::egui::{self, Event, ViewportBuilder, Widget};
+use eframe::egui::{self, ViewportBuilder, Widget};
 
 pub fn show_svg(svg: String) {
     eframe::run_native(
         "Plotiron Viewer",
         eframe::NativeOptions {
-            viewport: ViewportBuilder::default().with_inner_size(egui::Vec2::new(1000.0, 800.0)),
+            viewport: ViewportBuilder::default().with_inner_size(egui::Vec2::new(1200.0, 900.0)),
             centered: true,
             ..Default::default()
         },
@@ -46,17 +46,18 @@ impl eframe::App for Viewer {
         egui::CentralPanel::default()
             .frame(egui::Frame::new().fill(egui::Color32::WHITE))
             .show(ctx, |ui| {
-                ui.input(|i| {
-                    for event in &i.events {
-                        if let Event::MouseWheel { delta, .. } = event {
-                            if delta.y > 0.0 {
-                                self.ratio *= 1.02;
-                            } else if delta.y < 0.0 {
-                                self.ratio /= 1.02;
-                            }
-                        }
-                    }
-                });
+                // disable zoom
+                // ui.input(|i| {
+                //     for event in &i.events {
+                //         if let Event::MouseWheel { delta, .. } = event {
+                //             if delta.y > 0.0 {
+                //                 self.ratio *= 1.02;
+                //             } else if delta.y < 0.0 {
+                //                 self.ratio /= 1.02;
+                //             }
+                //         }
+                //     }
+                // });
 
                 ui.centered_and_justified(|ui| {
                     let bytes = self.svg.clone().into_bytes();

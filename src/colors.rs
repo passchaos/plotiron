@@ -59,6 +59,11 @@ impl Color {
     pub const GRAY: Color = Color { r: 128, g: 128, b: 128, a: 1.0 };
     pub const LIGHTGRAY: Color = Color { r: 211, g: 211, b: 211, a: 1.0 };
     pub const DARKGRAY: Color = Color { r: 64, g: 64, b: 64, a: 1.0 };
+    
+    // Matplotlib-style colors for better aesthetics
+    pub const GRID_COLOR: Color = Color { r: 230, g: 230, b: 230, a: 1.0 }; // Very light gray for grid
+    pub const AXIS_COLOR: Color = Color { r: 77, g: 77, b: 77, a: 1.0 };   // Dark gray for axes
+    pub const TEXT_COLOR: Color = Color { r: 0, g: 0, b: 0, a: 1.0 };     // Pure black for text
 }
 
 impl fmt::Display for Color {

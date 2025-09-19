@@ -20,12 +20,16 @@ pub fn calculate_range<T: Float + Copy>(data: &[T]) -> (T, T) {
         }
     }
     
-    // Add some padding if min == max
-    if min_val == max_val {
-        let padding = if min_val == T::zero() { T::one() } else { min_val * T::from(0.1).unwrap() };
-        min_val = min_val - padding;
-        max_val = max_val + padding;
-    }
+    // Add padding to prevent data from touching axis edges
+    let range = max_val - min_val;
+    let padding = if range == T::zero() {
+        if min_val == T::zero() { T::one() } else { min_val * T::from(0.1).unwrap() }
+    } else {
+        range * T::from(0.05).unwrap() // 5% padding on each side
+    };
+    
+    min_val = min_val - padding;
+    max_val = max_val + padding;
     
     (min_val, max_val)
 }
