@@ -1,7 +1,6 @@
 //! Axes functionality for plots
 
-use crate::IntoVec;
-use crate::colors::{Color, get_cycle_color};
+use crate::colors::Color;
 use crate::plot::Plot;
 use crate::utils::{calculate_range, format_number, generate_ticks, map_range};
 
@@ -57,91 +56,6 @@ impl Axes {
         self.plots.push(plot);
         self
     }
-
-    // /// Add a line plot
-    // pub fn plot<X, Y>(&mut self, x: X, y: Y) -> &mut Self
-    // where
-    //     X: IntoVec<f64>,
-    //     Y: IntoVec<f64>,
-    // {
-    //     let color_index = self.plots.len();
-    //     let mut plot = Plot::line(x, y);
-    //     plot.color = crate::colors::get_cycle_color(color_index);
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a scatter plot
-    // pub fn scatter<X, Y>(&mut self, x: X, y: Y) -> &mut Self
-    // where
-    //     X: IntoVec<f64>,
-    //     Y: IntoVec<f64>,
-    // {
-    //     let color_index = self.plots.len();
-    //     let mut plot = Plot::scatter(x, y);
-    //     plot.color = crate::colors::get_cycle_color(color_index);
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a bar plot
-    // pub fn bar<X, Y>(&mut self, x: X, y: Y) -> &mut Self
-    // where
-    //     X: IntoVec<f64>,
-    //     Y: IntoVec<f64>,
-    // {
-    //     let color_index = self.plots.len();
-    //     let mut plot = Plot::bar(x, y);
-    //     plot.color = crate::colors::get_cycle_color(color_index);
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a histogram
-    // pub fn histogram(&mut self, data: &[f64], bins: usize) -> &mut Self {
-    //     let plot = Plot::histogram(data, bins).color(get_cycle_color(self.plots.len()));
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a pie chart to the plot
-    // pub fn pie(&mut self, values: &[f64], labels: Option<&[String]>) -> &mut Self {
-    //     let plot = Plot::pie(values, labels).color(get_cycle_color(self.plots.len()));
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a box plot to the plot
-    // pub fn boxplot(&mut self, data: &[f64]) -> &mut Self {
-    //     let plot = Plot::boxplot(data).color(get_cycle_color(self.plots.len()));
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a heatmap to the plot
-    // pub fn heatmap(&mut self, data: &[Vec<f64>]) -> &mut Self {
-    //     let plot = Plot::heatmap(data).color(get_cycle_color(self.plots.len()));
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a violin plot to the plot
-    // pub fn violin(&mut self, data: &[f64]) -> &mut Self {
-    //     let plot = Plot::violin(data).color(get_cycle_color(self.plots.len()));
-    //     self.plots.push(plot);
-    //     self
-    // }
-
-    // /// Add a contour plot
-    // pub fn contour<X, Y>(&mut self, x: X, y: Y, z: &[Vec<f64>]) -> &mut Self
-    // where
-    //     X: IntoVec<f64>,
-    //     Y: IntoVec<f64>,
-    // {
-    //     let plot = Plot::contour(x, y, z).color(get_cycle_color(self.plots.len()));
-    //     self.plots.push(plot);
-    //     self
-    // }
 
     /// Add custom SVG element
     pub fn add_svg_element(&mut self, svg_element: String) {
@@ -214,41 +128,11 @@ impl Axes {
             return ((0.0, 1.0), (0.0, 1.0));
         }
 
-        // Check if we have any heatmaps - they need special handling
-        let has_heatmap = self
-            .plots
-            .iter()
-            .any(|p| matches!(p.plot_type, crate::plot::PlotType::Heatmap));
-
-        if has_heatmap {
-            // For heatmaps, use the dimensions to set ranges
-            for plot in &self.plots {
-                if matches!(plot.plot_type, crate::plot::PlotType::Heatmap)
-                    && plot.y_data.len() >= 2
-                {
-                    let rows = plot.y_data[0] as f64;
-                    let cols = plot.y_data[1] as f64;
-                    let x_range = self.x_limits.unwrap_or((0.0, cols));
-                    let y_range = self.y_limits.unwrap_or((0.0, rows));
-                    return (x_range, y_range);
-                }
-            }
-        }
-
         let mut all_x: Vec<f64> = Vec::new();
         let mut all_y: Vec<f64> = Vec::new();
 
         for plot in &self.plots {
             match plot.plot_type {
-                crate::plot::PlotType::Heatmap => {
-                    // Skip heatmaps for regular range calculation
-                }
-                crate::plot::PlotType::Violin | crate::plot::PlotType::BoxPlot => {
-                    // For violin and box plots, only use y_data for range calculation
-                    all_y.extend(&plot.y_data);
-                    // Use a default x range centered at 0
-                    all_x.extend(&[-1.0, 1.0]);
-                }
                 _ => {
                     // Regular plots use both x and y data
                     all_x.extend(&plot.x_data);
@@ -359,12 +243,6 @@ impl Axes {
             y_max = y_center + new_y_range / 2.0;
         }
 
-        // Check if any plot is a pie chart
-        let has_pie_chart = self
-            .plots
-            .iter()
-            .any(|plot| matches!(plot.plot_type, crate::plot::PlotType::Pie));
-
         let mut svg = String::new();
 
         // Background
@@ -378,7 +256,7 @@ impl Axes {
         ));
 
         // Grid (skip for pie charts)
-        if self.grid && !has_pie_chart {
+        if self.grid {
             svg.push_str(&self.generate_grid_svg(
                 x_min,
                 x_max,
@@ -401,7 +279,7 @@ impl Axes {
         }
 
         // Axes (skip for pie charts)
-        if (self.show_x_axis || self.show_y_axis) && !has_pie_chart {
+        if self.show_x_axis || self.show_y_axis {
             svg.push_str(&self.generate_axes_svg(
                 x_min,
                 x_max,
@@ -430,13 +308,11 @@ impl Axes {
         }
 
         // Outer border (matplotlib style)
-        if !has_pie_chart {
-            let border_color = Color::AXIS_COLOR.to_svg_string();
-            svg.push_str(&format!(
+        let border_color = Color::AXIS_COLOR.to_svg_string();
+        svg.push_str(&format!(
                 "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"none\" stroke=\"{}\" stroke-width=\"0.8\" />\n",
                 margin, margin, plot_width, plot_height, border_color
             ));
-        }
 
         svg
     }
@@ -642,16 +518,6 @@ impl Axes {
                             "<circle cx=\"{}\" cy=\"{}\" r=\"4\" fill=\"{}\" />\n",
                             legend_x + legend_padding + handle_length / 2.0,
                             current_y - 3.0,
-                            plot.plot_color().to_svg_string()
-                        ));
-                    }
-                    _ => {
-                        // Draw a small rectangle for other plot types
-                        svg.push_str(&format!(
-                            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"8\" fill=\"{}\" />\n",
-                            legend_x + legend_padding,
-                            current_y - 7.0,
-                            handle_length,
                             plot.plot_color().to_svg_string()
                         ));
                     }
