@@ -1,9 +1,9 @@
 //! Axes functionality for plots
 
+use crate::IntoVec;
 use crate::colors::{Color, get_cycle_color};
 use crate::plot::Plot;
 use crate::utils::{calculate_range, format_number, generate_ticks, map_range};
-use crate::IntoVec;
 
 /// Represents a set of axes for plotting
 #[derive(Debug)]
@@ -50,7 +50,7 @@ impl Axes {
     }
 
     /// Add a line plot
-    pub fn plot<X, Y>(&mut self, x: X, y: Y) -> &mut Self 
+    pub fn plot<X, Y>(&mut self, x: X, y: Y) -> &mut Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -63,7 +63,7 @@ impl Axes {
     }
 
     /// Add a scatter plot
-    pub fn scatter<X, Y>(&mut self, x: X, y: Y) -> &mut Self 
+    pub fn scatter<X, Y>(&mut self, x: X, y: Y) -> &mut Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -76,7 +76,7 @@ impl Axes {
     }
 
     /// Add a bar plot
-    pub fn bar<X, Y>(&mut self, x: X, y: Y) -> &mut Self 
+    pub fn bar<X, Y>(&mut self, x: X, y: Y) -> &mut Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -124,7 +124,7 @@ impl Axes {
     }
 
     /// Add a contour plot
-    pub fn contour<X, Y>(&mut self, x: X, y: Y, z: &[Vec<f64>]) -> &mut Self 
+    pub fn contour<X, Y>(&mut self, x: X, y: Y, z: &[Vec<f64>]) -> &mut Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -564,30 +564,102 @@ impl Axes {
 
     fn generate_legend_svg(&self, width: f64, _height: f64) -> String {
         let mut svg = String::new();
-        let legend_x = width - 150.0;
-        let mut legend_y = 60.0;
+        let margin = 60.0;
+        let plot_width = width - 2.0 * margin;
+
+        // Calculate legend dimensions
+        let legend_entries: Vec<_> = self.plots.iter().filter(|p| p.label.is_some()).collect();
+        if legend_entries.is_empty() {
+            return svg;
+        }
+
+        // Simple matplotlib-style legend parameters
+        let legend_padding = 2.0; // Minimal internal padding
+        let legend_border_width = 1.0;
+        let line_height = 22.0; // More generous spacing between entries
+        let handle_length = 35.0; // Longer handle length for better visibility
+        let handle_text_gap = 8.0; // Clear gap between handle and text
+
+        // Calculate dynamic legend dimensions based on content
+        let legend_height = legend_entries.len() as f64 * line_height + 2.0 * legend_padding;
+
+        // Calculate maximum text width to determine legend width
+        let mut max_text_width = 0.0f64;
+        for plot in &legend_entries {
+            if let Some(ref label) = plot.label {
+                // Estimate text width: approximately 0.6 * actual_font_size per character
+                let actual_font_size = self.font_size * 0.9;
+                let estimated_width = label.len() as f64 * actual_font_size * 0.6;
+                max_text_width = max_text_width.max(estimated_width);
+            }
+        }
+
+        // Calculate total legend width: padding + handle + gap + text (no right padding)
+        let legend_width =
+            legend_padding + handle_length + handle_text_gap + max_text_width;
+
+        let legend_x = margin + plot_width - legend_width - 10.0; // Position legend within plot area (standard margin)
+        let legend_y = margin + 20.0; // Start legend below the top margin
+
+        // Simple legend background with subtle border and rounded corners
+        svg.push_str(&format!(
+            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"{}\" fill=\"white\" stroke=\"#cccccc\" stroke-width=\"{}\" rx=\"3\" />\n",
+            legend_x - legend_padding,
+            legend_y - legend_padding,
+            legend_width,
+            legend_height,
+            legend_border_width
+        ));
+
+        let mut current_y = legend_y + line_height * 0.7; // Adjust for text baseline
 
         for plot in &self.plots {
             if let Some(ref label) = plot.label {
-                // Legend box
-                svg.push_str(&format!(
-                    "<rect x=\"{}\" y=\"{}\" width=\"15\" height=\"15\" fill=\"{}\" />\n",
-                    legend_x,
-                    legend_y - 10.0,
-                    plot.color.to_svg_string()
-                ));
+                // Legend handle (line for line plots, rect for others)
+                match plot.plot_type {
+                    crate::plot::PlotType::Line => {
+                        // Draw a line handle like matplotlib
+                        svg.push_str(&format!(
+                            "<line x1=\"{}\" y1=\"{}\" x2=\"{}\" y2=\"{}\" stroke=\"{}\" stroke-width=\"2\" />\n",
+                            legend_x + legend_padding,
+                            current_y - 3.0,
+                            legend_x + legend_padding + handle_length,
+                            current_y - 3.0,
+                            plot.color.to_svg_string()
+                        ));
+                    }
+                    crate::plot::PlotType::Scatter => {
+                        // Draw a circle marker for scatter plots
+                        svg.push_str(&format!(
+                            "<circle cx=\"{}\" cy=\"{}\" r=\"4\" fill=\"{}\" />\n",
+                            legend_x + legend_padding + handle_length / 2.0,
+                            current_y - 3.0,
+                            plot.color.to_svg_string()
+                        ));
+                    }
+                    _ => {
+                        // Draw a small rectangle for other plot types
+                        svg.push_str(&format!(
+                            "<rect x=\"{}\" y=\"{}\" width=\"{}\" height=\"8\" fill=\"{}\" />\n",
+                            legend_x + legend_padding,
+                            current_y - 7.0,
+                            handle_length,
+                            plot.color.to_svg_string()
+                        ));
+                    }
+                }
 
                 // Legend text
                 svg.push_str(&format!(
-                    "<text x=\"{}\" y=\"{}\" font-size=\"{}\" fill=\"{}\">{}</text>\n",
-                    legend_x + 20.0,
-                    legend_y,
-                    self.font_size,
+                    "<text x=\"{}\" y=\"{}\" font-size=\"{}\" font-family=\"Arial, sans-serif\" fill=\"{}\">{}</text>\n",
+                    legend_x + legend_padding + handle_length + handle_text_gap,
+                    current_y,
+                    (self.font_size * 0.9) as i32,  // Slightly smaller font size
                     self.text_color.to_svg_string(),
                     label
                 ));
 
-                legend_y += 25.0;
+                current_y += line_height;
             }
         }
 
