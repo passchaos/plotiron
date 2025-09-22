@@ -11,7 +11,10 @@ fn main() {
     let z = x.cos();
 
     let mut fig = figure();
-    fig.add_subplot().plot(&x, y).plot(x, z);
+    fig.add_subplot()
+        .add_plot(Plot::line(&x, y).label("sin(x)"))
+        .add_plot(Plot::line(x, z).label("cos(x)"))
+        .legend(true);
 
     let workspace_dir = PathBuf::from(std::env!("CARGO_MANIFEST_DIR"));
     std::fs::write(workspace_dir.join("output/line.svg"), fig.to_svg()).unwrap();

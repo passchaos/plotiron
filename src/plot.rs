@@ -1,9 +1,9 @@
 //! Plot types and plotting functionality
 
+use crate::IntoVec;
 use crate::colors::{Color, get_cycle_color};
 use crate::markers::Marker;
 use crate::utils::map_range;
-use crate::IntoVec;
 
 /// Different types of plots
 #[derive(Debug, Clone, PartialEq)]
@@ -35,7 +35,7 @@ pub struct Plot {
     pub y_data: Vec<f64>,
     pub z_data: Option<Vec<Vec<f64>>>, // For contour plots and 3D data
     pub plot_type: PlotType,
-    pub color: Color,
+    pub color: Option<Color>,
     pub marker: Marker,
     pub marker_size: f64,
     pub line_width: f64,
@@ -45,7 +45,7 @@ pub struct Plot {
 
 impl Plot {
     /// Create a new line plot
-    pub fn line<X, Y>(x: X, y: Y) -> Self 
+    pub fn line<X, Y>(x: X, y: Y) -> Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -55,7 +55,7 @@ impl Plot {
             y_data: y.into_vec(),
             z_data: None,
             plot_type: PlotType::Line,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 6.0,
             line_width: 2.0,
@@ -65,7 +65,7 @@ impl Plot {
     }
 
     /// Create a new scatter plot
-    pub fn scatter<X, Y>(x: X, y: Y) -> Self 
+    pub fn scatter<X, Y>(x: X, y: Y) -> Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -75,7 +75,7 @@ impl Plot {
             y_data: y.into_vec(),
             z_data: None,
             plot_type: PlotType::Scatter,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::Circle,
             marker_size: 6.0,
             line_width: 0.0,
@@ -85,7 +85,7 @@ impl Plot {
     }
 
     /// Create a new bar plot
-    pub fn bar<X, Y>(x: X, y: Y) -> Self 
+    pub fn bar<X, Y>(x: X, y: Y) -> Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -95,7 +95,7 @@ impl Plot {
             y_data: y.into_vec(),
             z_data: None,
             plot_type: PlotType::Bar,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 6.0,
             line_width: 1.0,
@@ -114,7 +114,7 @@ impl Plot {
             y_data: counts,
             z_data: None,
             plot_type: PlotType::Histogram,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 6.0,
             line_width: 1.0,
@@ -134,7 +134,7 @@ impl Plot {
             y_data: percentages,
             z_data: None,
             plot_type: PlotType::Pie,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 6.0,
             line_width: 2.5,
@@ -154,7 +154,7 @@ impl Plot {
             y_data: data.to_vec(),
             z_data: None,
             plot_type: PlotType::BoxPlot,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::Circle,
             marker_size: 3.0,
             line_width: 1.3,
@@ -184,7 +184,7 @@ impl Plot {
             y_data,
             z_data: None,
             plot_type: PlotType::Heatmap,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 1.0,
             line_width: 0.0,
@@ -204,7 +204,7 @@ impl Plot {
             y_data: data.to_vec(),
             z_data: None,
             plot_type: PlotType::Violin,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 3.0,
             line_width: 2.5,
@@ -214,7 +214,7 @@ impl Plot {
     }
 
     /// Create a new contour plot
-    pub fn contour<X, Y>(x: X, y: Y, z: &[Vec<f64>]) -> Self 
+    pub fn contour<X, Y>(x: X, y: Y, z: &[Vec<f64>]) -> Self
     where
         X: IntoVec<f64>,
         Y: IntoVec<f64>,
@@ -224,7 +224,7 @@ impl Plot {
             y_data: y.into_vec(),
             z_data: Some(z.to_vec()),
             plot_type: PlotType::Contour,
-            color: get_cycle_color(0),
+            color: None,
             marker: Marker::None,
             marker_size: 5.0,
             line_width: 1.0,
@@ -273,7 +273,7 @@ impl Plot {
 
     /// Set the color of the plot
     pub fn color(mut self, color: Color) -> Self {
-        self.color = color;
+        self.color = Some(color);
         self
     }
 
@@ -307,6 +307,10 @@ impl Plot {
         self
     }
 
+    pub fn plot_color(&self) -> Color {
+        self.color.unwrap_or(Color::BLACK)
+    }
+
     /// Generate SVG elements for this plot
     pub fn to_svg(
         &self,
@@ -335,7 +339,7 @@ impl Plot {
             return svg;
         }
 
-        let color_str = self.color.to_svg_string();
+        let color_str = self.color.unwrap_or(Color::BLACK).to_svg_string();
 
         match self.plot_type {
             PlotType::Line => {

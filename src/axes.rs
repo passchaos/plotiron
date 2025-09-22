@@ -49,90 +49,99 @@ impl Axes {
         }
     }
 
-    /// Add a line plot
-    pub fn plot<X, Y>(&mut self, x: X, y: Y) -> &mut Self
-    where
-        X: IntoVec<f64>,
-        Y: IntoVec<f64>,
-    {
-        let color_index = self.plots.len();
-        let mut plot = Plot::line(x, y);
-        plot.color = crate::colors::get_cycle_color(color_index);
+    pub fn add_plot(&mut self, mut plot: Plot) -> &mut Self {
+        if plot.color.is_none() {
+            plot.color = Some(crate::colors::get_cycle_color(self.plots.len()));
+        }
+
         self.plots.push(plot);
         self
     }
 
-    /// Add a scatter plot
-    pub fn scatter<X, Y>(&mut self, x: X, y: Y) -> &mut Self
-    where
-        X: IntoVec<f64>,
-        Y: IntoVec<f64>,
-    {
-        let color_index = self.plots.len();
-        let mut plot = Plot::scatter(x, y);
-        plot.color = crate::colors::get_cycle_color(color_index);
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a line plot
+    // pub fn plot<X, Y>(&mut self, x: X, y: Y) -> &mut Self
+    // where
+    //     X: IntoVec<f64>,
+    //     Y: IntoVec<f64>,
+    // {
+    //     let color_index = self.plots.len();
+    //     let mut plot = Plot::line(x, y);
+    //     plot.color = crate::colors::get_cycle_color(color_index);
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a bar plot
-    pub fn bar<X, Y>(&mut self, x: X, y: Y) -> &mut Self
-    where
-        X: IntoVec<f64>,
-        Y: IntoVec<f64>,
-    {
-        let color_index = self.plots.len();
-        let mut plot = Plot::bar(x, y);
-        plot.color = crate::colors::get_cycle_color(color_index);
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a scatter plot
+    // pub fn scatter<X, Y>(&mut self, x: X, y: Y) -> &mut Self
+    // where
+    //     X: IntoVec<f64>,
+    //     Y: IntoVec<f64>,
+    // {
+    //     let color_index = self.plots.len();
+    //     let mut plot = Plot::scatter(x, y);
+    //     plot.color = crate::colors::get_cycle_color(color_index);
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a histogram
-    pub fn histogram(&mut self, data: &[f64], bins: usize) -> &mut Self {
-        let plot = Plot::histogram(data, bins).color(get_cycle_color(self.plots.len()));
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a bar plot
+    // pub fn bar<X, Y>(&mut self, x: X, y: Y) -> &mut Self
+    // where
+    //     X: IntoVec<f64>,
+    //     Y: IntoVec<f64>,
+    // {
+    //     let color_index = self.plots.len();
+    //     let mut plot = Plot::bar(x, y);
+    //     plot.color = crate::colors::get_cycle_color(color_index);
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a pie chart to the plot
-    pub fn pie(&mut self, values: &[f64], labels: Option<&[String]>) -> &mut Self {
-        let plot = Plot::pie(values, labels).color(get_cycle_color(self.plots.len()));
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a histogram
+    // pub fn histogram(&mut self, data: &[f64], bins: usize) -> &mut Self {
+    //     let plot = Plot::histogram(data, bins).color(get_cycle_color(self.plots.len()));
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a box plot to the plot
-    pub fn boxplot(&mut self, data: &[f64]) -> &mut Self {
-        let plot = Plot::boxplot(data).color(get_cycle_color(self.plots.len()));
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a pie chart to the plot
+    // pub fn pie(&mut self, values: &[f64], labels: Option<&[String]>) -> &mut Self {
+    //     let plot = Plot::pie(values, labels).color(get_cycle_color(self.plots.len()));
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a heatmap to the plot
-    pub fn heatmap(&mut self, data: &[Vec<f64>]) -> &mut Self {
-        let plot = Plot::heatmap(data).color(get_cycle_color(self.plots.len()));
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a box plot to the plot
+    // pub fn boxplot(&mut self, data: &[f64]) -> &mut Self {
+    //     let plot = Plot::boxplot(data).color(get_cycle_color(self.plots.len()));
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a violin plot to the plot
-    pub fn violin(&mut self, data: &[f64]) -> &mut Self {
-        let plot = Plot::violin(data).color(get_cycle_color(self.plots.len()));
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a heatmap to the plot
+    // pub fn heatmap(&mut self, data: &[Vec<f64>]) -> &mut Self {
+    //     let plot = Plot::heatmap(data).color(get_cycle_color(self.plots.len()));
+    //     self.plots.push(plot);
+    //     self
+    // }
 
-    /// Add a contour plot
-    pub fn contour<X, Y>(&mut self, x: X, y: Y, z: &[Vec<f64>]) -> &mut Self
-    where
-        X: IntoVec<f64>,
-        Y: IntoVec<f64>,
-    {
-        let plot = Plot::contour(x, y, z).color(get_cycle_color(self.plots.len()));
-        self.plots.push(plot);
-        self
-    }
+    // /// Add a violin plot to the plot
+    // pub fn violin(&mut self, data: &[f64]) -> &mut Self {
+    //     let plot = Plot::violin(data).color(get_cycle_color(self.plots.len()));
+    //     self.plots.push(plot);
+    //     self
+    // }
+
+    // /// Add a contour plot
+    // pub fn contour<X, Y>(&mut self, x: X, y: Y, z: &[Vec<f64>]) -> &mut Self
+    // where
+    //     X: IntoVec<f64>,
+    //     Y: IntoVec<f64>,
+    // {
+    //     let plot = Plot::contour(x, y, z).color(get_cycle_color(self.plots.len()));
+    //     self.plots.push(plot);
+    //     self
+    // }
 
     /// Add custom SVG element
     pub fn add_svg_element(&mut self, svg_element: String) {
@@ -595,8 +604,7 @@ impl Axes {
         }
 
         // Calculate total legend width: padding + handle + gap + text (no right padding)
-        let legend_width =
-            legend_padding + handle_length + handle_text_gap + max_text_width;
+        let legend_width = legend_padding + handle_length + handle_text_gap + max_text_width;
 
         let legend_x = margin + plot_width - legend_width - 10.0; // Position legend within plot area (standard margin)
         let legend_y = margin + 20.0; // Start legend below the top margin
@@ -625,7 +633,7 @@ impl Axes {
                             current_y - 3.0,
                             legend_x + legend_padding + handle_length,
                             current_y - 3.0,
-                            plot.color.to_svg_string()
+                            plot.plot_color().to_svg_string()
                         ));
                     }
                     crate::plot::PlotType::Scatter => {
@@ -634,7 +642,7 @@ impl Axes {
                             "<circle cx=\"{}\" cy=\"{}\" r=\"4\" fill=\"{}\" />\n",
                             legend_x + legend_padding + handle_length / 2.0,
                             current_y - 3.0,
-                            plot.color.to_svg_string()
+                            plot.plot_color().to_svg_string()
                         ));
                     }
                     _ => {
@@ -644,7 +652,7 @@ impl Axes {
                             legend_x + legend_padding,
                             current_y - 7.0,
                             handle_length,
-                            plot.color.to_svg_string()
+                            plot.plot_color().to_svg_string()
                         ));
                     }
                 }

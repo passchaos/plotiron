@@ -7,22 +7,10 @@
 //! use plotiron::prelude::*;
 //! ```
 
-pub use crate::{
-    axes::Axes,
-    colors::Color,
-    figure::Figure,
-    markers::Marker,
-    plot::Plot,
-    IntoVec,
-};
+pub use crate::{IntoVec, axes::Axes, colors::Color, figure::Figure, markers::Marker, plot::Plot};
 
 // Re-export DOT module for graph visualization
-pub use crate::dot;
+// pub use crate::dot;
 
 // Re-export commonly used functions
-pub use crate::{
-    figure,
-    figure_with_size,
-    plot,
-    scatter,
-};
+pub use crate::{figure, figure_with_size};

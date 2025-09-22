@@ -66,28 +66,28 @@ impl Figure {
     }
 
     /// Add a subplot with DOT graph content
-    pub fn add_dot_subplot(&mut self, dot_content: &str) -> Result<&mut Axes, String> {
-        self.add_dot_subplot_with_layout(dot_content, crate::dot::LayoutAlgorithm::Hierarchical)
-    }
+    // pub fn add_dot_subplot(&mut self, dot_content: &str) -> Result<&mut Axes, String> {
+    //     self.add_dot_subplot_with_layout(dot_content, crate::dot::LayoutAlgorithm::Hierarchical)
+    // }
 
     /// Add a DOT subplot with specified layout algorithm
-    pub fn add_dot_subplot_with_layout(
-        &mut self,
-        dot_content: &str,
-        layout: crate::dot::LayoutAlgorithm,
-    ) -> Result<&mut Axes, String> {
-        let axes = self.add_subplot();
+    // pub fn add_dot_subplot_with_layout(
+    //     &mut self,
+    //     dot_content: &str,
+    //     layout: crate::dot::LayoutAlgorithm,
+    // ) -> Result<&mut Axes, String> {
+    //     let axes = self.add_subplot();
 
-        // Parse DOT content using the advanced renderer
-        let mut dot_graph = crate::dot::DotGraph::parse_dot(dot_content)?;
-        dot_graph.set_layout(layout);
-        dot_graph.apply_layout();
+    //     // Parse DOT content using the advanced renderer
+    //     let mut dot_graph = crate::dot::DotGraph::parse_dot(dot_content)?;
+    //     dot_graph.set_layout(layout);
+    //     dot_graph.apply_layout();
 
-        // Render the graph to the axes
-        dot_graph.render_to_axes(axes);
+    //     // Render the graph to the axes
+    //     dot_graph.render_to_axes(axes);
 
-        Ok(axes)
-    }
+    //     Ok(axes)
+    // }
 
     /// Get a mutable reference to a subplot by index
     pub fn subplot(&mut self, index: usize) -> Option<&mut Axes> {
@@ -157,122 +157,122 @@ impl Figure {
         self
     }
 
-    /// Create a figure from DOT markup language
-    pub fn from_dot(dot_content: &str) -> Result<Self, String> {
-        let mut figure = Figure::new();
-        let axes = figure.add_subplot();
+    // Create a figure from DOT markup language
+    // pub fn from_dot(dot_content: &str) -> Result<Self, String> {
+    //     let mut figure = Figure::new();
+    //     let axes = figure.add_subplot();
 
-        // Parse DOT content
-        let lines: Vec<&str> = dot_content.lines().collect();
-        let mut nodes = Vec::new();
-        let mut edges = Vec::new();
+    //     // Parse DOT content
+    //     let lines: Vec<&str> = dot_content.lines().collect();
+    //     let mut nodes = Vec::new();
+    //     let mut edges = Vec::new();
 
-        for line in lines {
-            let line = line.trim();
-            if line.is_empty()
-                || line.starts_with("//")
-                || line.starts_with("digraph")
-                || line.starts_with("graph")
-                || line == "{"
-                || line == "}"
-            {
-                continue;
-            }
+    //     for line in lines {
+    //         let line = line.trim();
+    //         if line.is_empty()
+    //             || line.starts_with("//")
+    //             || line.starts_with("digraph")
+    //             || line.starts_with("graph")
+    //             || line == "{"
+    //             || line == "}"
+    //         {
+    //             continue;
+    //         }
 
-            if line.contains("->") {
-                // Edge definition
-                let parts: Vec<&str> = line.split("->").collect();
-                if parts.len() == 2 {
-                    let from = parts[0].trim().trim_matches('"');
-                    let to = parts[1].trim().trim_end_matches(';').trim_matches('"');
-                    edges.push((from.to_string(), to.to_string()));
-                }
-            } else if line.contains("--") {
-                // Undirected edge
-                let parts: Vec<&str> = line.split("--").collect();
-                if parts.len() == 2 {
-                    let from = parts[0].trim().trim_matches('"');
-                    let to = parts[1].trim().trim_end_matches(';').trim_matches('"');
-                    edges.push((from.to_string(), to.to_string()));
-                }
-            } else if line.contains('[') && line.contains(']') {
-                // Node with attributes
-                let node_name = line.split('[').next().unwrap().trim().trim_matches('"');
-                if !node_name.is_empty() {
-                    nodes.push(node_name.to_string());
-                }
-            } else if line.ends_with(';') {
-                // Simple node definition
-                let node_name = line.trim_end_matches(';').trim().trim_matches('"');
-                if !node_name.is_empty() {
-                    nodes.push(node_name.to_string());
-                }
-            }
-        }
+    //         if line.contains("->") {
+    //             // Edge definition
+    //             let parts: Vec<&str> = line.split("->").collect();
+    //             if parts.len() == 2 {
+    //                 let from = parts[0].trim().trim_matches('"');
+    //                 let to = parts[1].trim().trim_end_matches(';').trim_matches('"');
+    //                 edges.push((from.to_string(), to.to_string()));
+    //             }
+    //         } else if line.contains("--") {
+    //             // Undirected edge
+    //             let parts: Vec<&str> = line.split("--").collect();
+    //             if parts.len() == 2 {
+    //                 let from = parts[0].trim().trim_matches('"');
+    //                 let to = parts[1].trim().trim_end_matches(';').trim_matches('"');
+    //                 edges.push((from.to_string(), to.to_string()));
+    //             }
+    //         } else if line.contains('[') && line.contains(']') {
+    //             // Node with attributes
+    //             let node_name = line.split('[').next().unwrap().trim().trim_matches('"');
+    //             if !node_name.is_empty() {
+    //                 nodes.push(node_name.to_string());
+    //             }
+    //         } else if line.ends_with(';') {
+    //             // Simple node definition
+    //             let node_name = line.trim_end_matches(';').trim().trim_matches('"');
+    //             if !node_name.is_empty() {
+    //                 nodes.push(node_name.to_string());
+    //             }
+    //         }
+    //     }
 
-        // Collect all unique nodes from edges
-        for (from, to) in &edges {
-            if !nodes.contains(from) {
-                nodes.push(from.clone());
-            }
-            if !nodes.contains(to) {
-                nodes.push(to.clone());
-            }
-        }
+    //     // Collect all unique nodes from edges
+    //     for (from, to) in &edges {
+    //         if !nodes.contains(from) {
+    //             nodes.push(from.clone());
+    //         }
+    //         if !nodes.contains(to) {
+    //             nodes.push(to.clone());
+    //         }
+    //     }
 
-        if nodes.is_empty() {
-            return Err("No nodes found in DOT content".to_string());
-        }
+    //     if nodes.is_empty() {
+    //         return Err("No nodes found in DOT content".to_string());
+    //     }
 
-        // Create a simple layout for nodes
-        let node_count = nodes.len();
-        let mut x_coords = Vec::new();
-        let mut y_coords = Vec::new();
+    //     // Create a simple layout for nodes
+    //     let node_count = nodes.len();
+    //     let mut x_coords = Vec::new();
+    //     let mut y_coords = Vec::new();
 
-        if node_count == 1 {
-            x_coords.push(0.5);
-            y_coords.push(0.5);
-        } else {
-            // Arrange nodes in a circle
-            for i in 0..node_count {
-                let angle = 2.0 * std::f64::consts::PI * i as f64 / node_count as f64;
-                let x = 0.5 + 0.3 * angle.cos();
-                let y = 0.5 + 0.3 * angle.sin();
-                x_coords.push(x);
-                y_coords.push(y);
-            }
-        }
+    //     if node_count == 1 {
+    //         x_coords.push(0.5);
+    //         y_coords.push(0.5);
+    //     } else {
+    //         // Arrange nodes in a circle
+    //         for i in 0..node_count {
+    //             let angle = 2.0 * std::f64::consts::PI * i as f64 / node_count as f64;
+    //             let x = 0.5 + 0.3 * angle.cos();
+    //             let y = 0.5 + 0.3 * angle.sin();
+    //             x_coords.push(x);
+    //             y_coords.push(y);
+    //         }
+    //     }
 
-        // Plot nodes as scatter points
-        axes.scatter(x_coords.as_slice(), y_coords.as_slice());
-        if let Some(last_plot) = axes.plots.last_mut() {
-            last_plot.marker = crate::markers::Marker::Circle;
-            last_plot.marker_size = 10.0;
-            last_plot.color = crate::colors::Color::BLUE;
-        }
+    //     // Plot nodes as scatter points
+    //     axes.scatter(x_coords.as_slice(), y_coords.as_slice());
+    //     if let Some(last_plot) = axes.plots.last_mut() {
+    //         last_plot.marker = crate::markers::Marker::Circle;
+    //         last_plot.marker_size = 10.0;
+    //         last_plot.color = crate::colors::Color::BLUE;
+    //     }
 
-        // Draw edges as lines
-        for (from, to) in edges {
-            if let (Some(from_idx), Some(to_idx)) = (
-                nodes.iter().position(|n| n == &from),
-                nodes.iter().position(|n| n == &to),
-            ) {
-                let x_line = vec![x_coords[from_idx], x_coords[to_idx]];
-                let y_line = vec![y_coords[from_idx], y_coords[to_idx]];
-                axes.plot(x_line, y_line);
-                if let Some(last_plot) = axes.plots.last_mut() {
-                    last_plot.color = crate::colors::Color::BLACK;
-                    last_plot.line_width = 1.0;
-                }
-            }
-        }
+    //     // Draw edges as lines
+    //     for (from, to) in edges {
+    //         if let (Some(from_idx), Some(to_idx)) = (
+    //             nodes.iter().position(|n| n == &from),
+    //             nodes.iter().position(|n| n == &to),
+    //         ) {
+    //             let x_line = vec![x_coords[from_idx], x_coords[to_idx]];
+    //             let y_line = vec![y_coords[from_idx], y_coords[to_idx]];
+    //             axes.plot(x_line, y_line);
+    //             if let Some(last_plot) = axes.plots.last_mut() {
+    //                 last_plot.color = crate::colors::Color::BLACK;
+    //                 last_plot.line_width = 1.0;
+    //             }
+    //         }
+    //     }
 
-        axes.set_title("Graph from DOT");
-        axes.set_xlabel("X");
-        axes.set_ylabel("Y");
+    //     axes.set_title("Graph from DOT");
+    //     axes.set_xlabel("X");
+    //     axes.set_ylabel("Y");
 
-        Ok(figure)
-    }
+    //     Ok(figure)
+    // }
 }
 
 impl Default for Figure {

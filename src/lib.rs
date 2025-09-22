@@ -5,7 +5,7 @@
 
 pub mod axes;
 pub mod colors;
-pub mod dot;
+// pub mod dot;
 pub mod figure;
 pub mod markers;
 pub mod plot;
@@ -41,18 +41,4 @@ pub fn figure() -> Figure {
 /// Create a new figure with specified width and height
 pub fn figure_with_size(width: f64, height: f64) -> Figure {
     Figure::with_size(width, height)
-}
-
-/// Quick plot function for simple line plots
-pub fn plot(x: &[f64], y: &[f64]) -> Figure {
-    let mut fig = Figure::new();
-    fig.add_subplot().plot(x, y);
-    fig
-}
-
-/// Quick scatter plot function
-pub fn scatter(x: &[f64], y: &[f64]) -> Figure {
-    let mut fig = Figure::new();
-    fig.add_subplot().scatter(x, y);
-    fig
 }
