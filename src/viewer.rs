@@ -71,6 +71,6 @@ impl eframe::App for Viewer {
                 });
             });
 
-        ctx.request_repaint_after_secs(0.1);
+        // ctx.request_repaint_after_secs(0.1);
     }
 }
