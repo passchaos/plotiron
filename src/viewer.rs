@@ -1,4 +1,4 @@
-use eframe::egui::{self, ViewportBuilder, Widget};
+use eframe::egui::{self, ViewportBuilder};
 
 pub fn show_svg(svg: String) {
     eframe::run_native(
@@ -17,7 +17,7 @@ pub fn show_svg(svg: String) {
 }
 
 struct Viewer {
-    ratio: f32,
+    // ratio: f32,
     hint: String,
     svg: String,
 }
@@ -26,7 +26,7 @@ impl Viewer {
     pub fn new(svg: String) -> Self {
         let hint = svg_hint(&svg);
         Self {
-            ratio: 1.0,
+            // ratio: 1.0,
             hint,
             svg,
         }
@@ -67,7 +67,8 @@ impl eframe::App for Viewer {
                     ));
 
                     let image = egui::Image::new(img_src);
-                    image.fit_to_original_size(self.ratio).ui(ui);
+                    ui.add(image);
+                    // image.fit_to_original_size(self.ratio).ui(ui);
                 });
             });
 
